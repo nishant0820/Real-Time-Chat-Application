@@ -235,4 +235,5 @@ This project is part of the Real-Time Chat Application and follows the same lice
 
 ---
 
-For backend setup and full application documentation, see the main [README.md](../README.md) file.
+For backend setup and full application documentation, see the [Backend README.md](../server/README.md) file.
+For full application documentation, see the main [README.md](../README.md) file.

@@ -99,7 +99,7 @@ Create a `.env` file in the server directory with the following variables:
 
 ```env
 # Database Configuration
-MONGODB_URI=mongodb://localhost:27017/chatapp
+MONGODB_URI=your_mongodb_uri
 # or use MongoDB Atlas: mongodb+srv://username:password@cluster.mongodb.net/
 
 # JWT Configuration

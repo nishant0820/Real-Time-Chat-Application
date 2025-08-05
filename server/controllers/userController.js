@@ -22,6 +22,9 @@ export const signup = async (req, res) => {
             password: hashedPassword,
             bio
         });
+        
+        await newUser.save();
+        
         const token = generateToken(newUser._id);
         res.json({
             success: true,
@@ -42,6 +45,11 @@ export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         const userData = await User.findOne({ email });
+        
+        if(!userData) {
+            return res.json({ success: false, message: "User not found" });
+        }
+        
         const isPasswordCorrect = await bcrypt.compare(password, userData.password);
         if(!isPasswordCorrect) {
             return res.json({ success: false, message: "Invalid credentials" });
@@ -74,9 +82,22 @@ export const updateProfile = async (req, res) => {
         if(!profilePic) {
             updatedUser = await User.findByIdAndUpdate(userId, { bio, fullName }, { new: true });
         } else {
-            const upload = await cloudinary.uploader.upload(profilePic);
-            updatedUser = await User.findByIdAndUpdate(userId, {profilePic: upload.secure_url, bio, fullName}, { new: true });
+            try {
+                const upload = await cloudinary.uploader.upload(profilePic);
+                updatedUser = await User.findByIdAndUpdate(userId, {profilePic: upload.secure_url, bio, fullName}, { new: true });
+            } catch (cloudinaryError) {
+                console.log("Cloudinary error:", cloudinaryError.message);
+                return res.json({ 
+                    success: false, 
+                    message: "Failed to upload image." 
+                });
+            }
         }
+        
+        if(!updatedUser) {
+            return res.json({ success: false, message: "User not found" });
+        }
+        
         res.json({
             success: true,
             user: updatedUser,
